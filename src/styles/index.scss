@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
+@import 'leaflet/dist/leaflet.css';
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.global-container {
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(180deg, rgba(63,81,180,1) 0%, rgba(139,185,231,1) 100%, rgba(63,81,180,1) 100%);
+}
+
+.container {
+  max-width: 1200px;
+  height: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
