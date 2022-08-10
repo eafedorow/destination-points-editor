@@ -1,13 +1,15 @@
 import { AppBar, Button, Tab, Tabs } from '@mui/material'
 import {Icon, LatLngExpression, LeafletMouseEvent} from 'leaflet'
-import React, {useState} from 'react'
-import {MapContainer, Marker, Popup, TileLayer, Tooltip} from 'react-leaflet'
+import React, {useEffect, useState} from 'react'
+import {MapContainer, Marker, Popup, TileLayer, Tooltip, useMap, useMapEvents} from 'react-leaflet'
 import s from './MapPage.module.scss'
 import {SwitchButton} from "../../components/UI/SwitchButton/SwitchButton";
 import {IPoint} from "../../model/IPoint";
 import pointImage from '../../assets/img/point.png'
 import { MarkerItem } from '../../components/MarkerItem/MarkerItem'
 import {CustomTooltip} from "../../components/CustomTooltip/CustomTooltip";
+import {SetBoundsDefault} from "../../components/SetBoundsDefault/SetBoundsDefault";
+import {Modal} from "../../components/Modal/Modal";
 
 interface Props {
 
@@ -38,25 +40,33 @@ export const MapPage = (props: Props) => {
     const [endpoints, setEndpoints] = useState<IPoint[]>(mockPoints);
     const [isEditing, setIsEditing] = useState(false);
     const [posForNewPoint, setPosForNewPoint] = useState<LatLngExpression | null>(null);
-    const [pointCreating, setPointCreating] = useState(false);
+    const [isPointCreating, setIsPointCreating] = useState(false);
     const [isPointsNamesDisplay, setIsPointsNamesDisplay] = useState(false);
+    const [zoomLevel, setZoomLevel] = useState(15);
+    const [value, setValue] = useState(0);
 
     const mapClick = (e: LeafletMouseEvent) => {
         if (isEditing) {
             setPosForNewPoint(e.latlng);
-            setPointCreating(true);
+            setIsPointCreating(true);
+        }
+    };
+
+    const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+        setValue(newValue);
+        if(newValue==1){
+            setIsEditing(false);
         }
     };
 
     return (
         <section className={s.mapPage}>
             <AppBar position="static">
-                <Tabs>
+                <Tabs value={value} onChange={handleChange}>
                     <Tab label="Точки назначения" />
                     <Tab label="Пользователи" />
                 </Tabs>
             </AppBar>
-
             <div className={s.editingBlock}>
                 <span className={s.editingBlock__title}>Режим редактирования</span>
                 <SwitchButton isToggled={isEditing} onToggle={() => setIsEditing(!isEditing)} rounded/>
@@ -64,13 +74,12 @@ export const MapPage = (props: Props) => {
                 <SwitchButton isToggled={isPointsNamesDisplay} onToggle={() => setIsPointsNamesDisplay(!isPointsNamesDisplay)} rounded/>
             </div>
 
-            {/*<MarkerCreationModal*/}
-            {/*    isOpen={newMarkerDialogState}*/}
-            {/*    title={"Создание точки назначения"}*/}
-            {/*    markerName={""}*/}
-            {/*    onSaveClick={onNewMarkerDialogSaveClick}*/}
-            {/*    onCancelClick={onNewMarkerDialogCancelClick}*/}
-            {/*/>*/}
+            <Modal
+                isOpen={isPointCreating}
+                setIsOpen={setIsPointCreating}
+                title={"Создание точки назначения"}
+            />
+
             {/*<MarkerCreationModal*/}
             {/*    isOpen={updateMarkerDialogState}*/}
             {/*    title={"Изменение точки назначения"}*/}
@@ -81,13 +90,15 @@ export const MapPage = (props: Props) => {
 
             <MapContainer
                 className={s.container}
-                center={position} zoom={16}>
+                center={position} zoom={zoomLevel}
+                minZoom={15}
+            >
                 <MarkerItem onMapClick={mapClick} />
                 <TileLayer
-                    noWrap={true}
+                    noWrap={false}
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                {
+                {zoomLevel >= 15 &&
                     endpoints.map((marker, index) => (
                         <Marker
                             position={marker.position}
@@ -102,6 +113,7 @@ export const MapPage = (props: Props) => {
                         </Marker>
                     ))
                 }
+                <SetBoundsDefault zoomLevel={zoomLevel} setZoomLevel={setZoomLevel}/>
             </MapContainer>
         </section>
     )
