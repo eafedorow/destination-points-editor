@@ -39,7 +39,7 @@ export const MapPage = (props: Props) => {
 
     const [endpoints, setEndpoints] = useState<IPoint[]>(mockPoints);
     const [isEditing, setIsEditing] = useState(false);
-    const [posForNewPoint, setPosForNewPoint] = useState<LatLngExpression | null>(null);
+    const [posForNewPoint, setPosForNewPoint] = useState<LatLngExpression>([0,0]);
     const [isPointCreating, setIsPointCreating] = useState(false);
     const [isPointsNamesDisplay, setIsPointsNamesDisplay] = useState(false);
     const [zoomLevel, setZoomLevel] = useState(15);
@@ -59,6 +59,17 @@ export const MapPage = (props: Props) => {
         }
     };
 
+    const addPoint = (name:string) => {
+        const newPoint: IPoint = {
+            name,
+            id: Date.now(),
+            position: posForNewPoint
+        }
+
+        setEndpoints([...endpoints, newPoint]);
+        setIsPointCreating(false)
+    }
+
     return (
         <section className={s.mapPage}>
             <AppBar position="static">
@@ -76,6 +87,7 @@ export const MapPage = (props: Props) => {
 
             <Modal
                 isOpen={isPointCreating}
+                acceptClick={(name: string) => addPoint(name)}
                 setIsOpen={setIsPointCreating}
                 title={"Создание точки назначения"}
             />

@@ -6,9 +6,12 @@ interface Props {
     title: string;
     isOpen: boolean;
     setIsOpen: (newState: boolean) => void;
+    acceptClick: (name: string) => void;
 }
 
-export const Modal = ({title, isOpen, setIsOpen}: Props) => {
+export const Modal = ({title, isOpen, setIsOpen, acceptClick}: Props) => {
+    const [pointName, setPointName] = useState('');
+
     const modalWrapperClasses = [s.modalWrapper, isOpen ? s.active : " "];
     const modalClasses = [s.modal, isOpen ? s.active : " "];
     return (
@@ -25,6 +28,8 @@ export const Modal = ({title, isOpen, setIsOpen}: Props) => {
                 <TextField
                     className={s.modal__namefield}
                     id="outlined-basic"
+                    value={pointName}
+                    onChange={(e) => setPointName(e.target.value)}
                     label="Наименование"
                     variant="outlined"
                     required
@@ -38,8 +43,7 @@ export const Modal = ({title, isOpen, setIsOpen}: Props) => {
                     <Button
                         className='submitBtn'
                         color="primary"
-                        onClick={() => {setIsOpen(false);
-                            console.log(isOpen)}}
+                        onClick={() => {acceptClick(pointName)}}
                     >Сохранить</Button>
                 </div>
             </Paper>
