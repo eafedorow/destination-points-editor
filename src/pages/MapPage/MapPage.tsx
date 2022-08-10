@@ -40,7 +40,6 @@ export const MapPage = (props: Props) => {
     const [endpoints, setEndpoints] = useState<IPoint[]>(mockPoints);
     const [isEditing, setIsEditing] = useState(false);
     const [posForNewPoint, setPosForNewPoint] = useState<LatLngExpression | null>(null);
-
     const [isPointCreating, setIsPointCreating] = useState(false);
     const [isPointsNamesDisplay, setIsPointsNamesDisplay] = useState(false);
     const [zoomLevel, setZoomLevel] = useState(15);
@@ -49,7 +48,6 @@ export const MapPage = (props: Props) => {
     const mapClick = (e: LeafletMouseEvent) => {
         if (isEditing) {
             setPosForNewPoint(e.latlng);
-
             setIsPointCreating(true);
         }
     };
@@ -75,7 +73,6 @@ export const MapPage = (props: Props) => {
                 <span className={s.editingBlock__title}>Отобразить все наименования точек</span>
                 <SwitchButton isToggled={isPointsNamesDisplay} onToggle={() => setIsPointsNamesDisplay(!isPointsNamesDisplay)} rounded/>
             </div>
-
 
             <Modal
                 isOpen={isPointCreating}

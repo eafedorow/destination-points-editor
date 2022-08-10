@@ -38,12 +38,14 @@ export const SetBoundsDefault = ({zoomLevel, setZoomLevel}: Props) => {
         })
     }, [map])
     return (
-        <>
+            <>
+            {zoomLevel <= 15 &&
                 <Rectangle
                     bounds={bounds}
                     eventHandlers={outerHandlers}
                     pathOptions={{fillOpacity: 0}}
                 />
+            }
         </>
     )
 }
