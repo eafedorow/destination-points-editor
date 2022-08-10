@@ -4,13 +4,15 @@ import s from "./Modal.module.scss"
 
 interface Props {
     title: string;
+    defaultName?: string;
     isOpen: boolean;
     setIsOpen: (newState: boolean) => void;
     acceptClick: (name: string) => void;
 }
 
-export const Modal = ({title, isOpen, setIsOpen, acceptClick}: Props) => {
-    const [pointName, setPointName] = useState('');
+export const Modal = ({title, defaultName, isOpen, setIsOpen, acceptClick}: Props) => {
+    const [pointName, setPointName] = useState(defaultName?.length ? defaultName : "");
+    const [error, setError] = useState(false)
 
     const modalWrapperClasses = [s.modalWrapper, isOpen ? s.active : " "];
     const modalClasses = [s.modal, isOpen ? s.active : " "];
@@ -28,10 +30,15 @@ export const Modal = ({title, isOpen, setIsOpen, acceptClick}: Props) => {
                 <TextField
                     className={s.modal__namefield}
                     id="outlined-basic"
+                    color={error ? 'error' : "primary"}
                     value={pointName}
-                    onChange={(e) => setPointName(e.target.value)}
+                    onChange={(e) => {
+                        setError(false)
+                        setPointName(e.target.value)
+                    }}
                     label="Наименование"
                     variant="outlined"
+                    helperText={error ? "Введите наименование" : ""}
                     required
                 />
                 <div className={s.modal__buttons}>
@@ -43,7 +50,13 @@ export const Modal = ({title, isOpen, setIsOpen, acceptClick}: Props) => {
                     <Button
                         className='submitBtn'
                         color="primary"
-                        onClick={() => {acceptClick(pointName)}}
+                        onClick={() => {
+                            if(pointName) {
+                                acceptClick(pointName)
+                            } else {
+                                setError(true)
+                            }
+                        }}
                     >Сохранить</Button>
                 </div>
             </Paper>
