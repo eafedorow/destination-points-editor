@@ -43,6 +43,7 @@ export const MapPage = (props: Props) => {
 
 
     const [editingPoint, setEditingPoint] = useState<IPoint | null>(null);
+    const [defaultValue, setDefaultValue] = useState("");
     const [isPointEditing, setIsPointEditing] = useState(false);
 
 
@@ -51,7 +52,7 @@ export const MapPage = (props: Props) => {
     const [value, setValue] = useState(0);
 
     const mapClick = (e: LeafletMouseEvent) => {
-        if (isEditing) {
+        if (isEditing && zoomLevel >= 15) {
             setPosForNewPoint(e.latlng);
             setIsPointCreating(true);
         }
@@ -100,6 +101,8 @@ export const MapPage = (props: Props) => {
         setEndpoints(filteredEndpoints)
     }
 
+    // @ts-ignore
+    // @ts-ignore
     return (
         <section className={s.mapPage}>
             <AppBar position="static">
@@ -108,25 +111,29 @@ export const MapPage = (props: Props) => {
                     <Tab label="Пользователи" />
                 </Tabs>
             </AppBar>
+
             <div className={s.editingBlock}>
-                <span className={s.editingBlock__title}>Режим редактирования</span>
-                <SwitchButton isToggled={isEditing} onToggle={() => setIsEditing(!isEditing)} rounded/>
-                <span className={s.editingBlock__title}>Отобразить все наименования точек</span>
-                <SwitchButton isToggled={isPointsNamesDisplay} onToggle={() => setIsPointsNamesDisplay(!isPointsNamesDisplay)} rounded/>
+                <div className={s.editingBlock__element}>
+                    <span className={s.editingBlock__title}>Режим редактирования</span>
+                    <SwitchButton isToggled={isEditing} onToggle={() => setIsEditing(!isEditing)} rounded/>
+                </div>
+                <div className={s.editingBlock__element}>
+                    <span className={s.editingBlock__title}>Отобразить все наименования точек</span>
+                    <SwitchButton isToggled={isPointsNamesDisplay} onToggle={() => setIsPointsNamesDisplay(!isPointsNamesDisplay)} rounded/>
+                </div>
             </div>
 
             <Modal
                 isOpen={isPointCreating}
                 acceptClick={(name: string) => addPoint(name)}
                 setIsOpen={setIsPointCreating}
+                defaultName={""}
                 title={"Создание точки назначения"}
             />
-
-
             <Modal
                 isOpen={isPointEditing}
                 acceptClick={(name: string) => editPoint(name)}
-                defaultName={editingPoint?.name}
+                defaultName={defaultValue}
                 setIsOpen={setIsPointEditing}
                 title={"Изменение точки назначения"}
             />
@@ -154,6 +161,7 @@ export const MapPage = (props: Props) => {
                             <Popup>
                                 <Button disabled={!isEditing} size="small" onClick={() => {
                                     setEditingPoint(marker)
+                                    setDefaultValue(marker.name);
                                     setIsPointEditing(true)
                                 }}>
                                     Изменить</Button><br />
