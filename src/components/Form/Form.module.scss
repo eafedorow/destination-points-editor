@@ -36,3 +36,22 @@
   }
 }
 
+@media (max-width: 900px) {
+  .form {
+    &__annotation {
+      font-size: 16px;
+    }
+  }
+}
+
+@media (max-width: 450px) {
+  .formWrapper {
+    padding: 10px;
+  }
+  .form {
+    &__annotation {
+      font-size: 14px;
+    }
+  }
+}
+
