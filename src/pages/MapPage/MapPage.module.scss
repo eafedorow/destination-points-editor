@@ -18,3 +18,10 @@
     font-weight: 400;
   }
 }
+
+@media (max-width: 900px) {
+
+  .container {
+    height: 800px;
+  }
+}

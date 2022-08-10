@@ -7,7 +7,6 @@ import {SwitchButton} from "../../components/UI/SwitchButton/SwitchButton";
 import {IPoint} from "../../model/IPoint";
 import pointImage from '../../assets/img/point.png'
 import { MarkerItem } from '../../components/MarkerItem/MarkerItem'
-import {CustomTooltip} from "../../components/CustomTooltip/CustomTooltip";
 import {SetBoundsDefault} from "../../components/SetBoundsDefault/SetBoundsDefault";
 import {Modal} from "../../components/Modal/Modal";
 
@@ -41,6 +40,12 @@ export const MapPage = (props: Props) => {
     const [isEditing, setIsEditing] = useState(false);
     const [posForNewPoint, setPosForNewPoint] = useState<LatLngExpression>([0,0]);
     const [isPointCreating, setIsPointCreating] = useState(false);
+
+
+    const [editingPoint, setEditingPoint] = useState<IPoint | null>(null);
+    const [isPointEditing, setIsPointEditing] = useState(false);
+
+
     const [isPointsNamesDisplay, setIsPointsNamesDisplay] = useState(false);
     const [zoomLevel, setZoomLevel] = useState(15);
     const [value, setValue] = useState(0);
@@ -70,6 +75,31 @@ export const MapPage = (props: Props) => {
         setIsPointCreating(false)
     }
 
+    const editPoint = (name:string) => {
+        if(editingPoint !== null) {
+            // @ts-ignore
+            const id = editingPoint.id
+            let existingPoint = endpoints[id];
+            existingPoint = {
+                ...existingPoint,
+                name
+            }
+            endpoints[id] = existingPoint;
+            setEndpoints([...endpoints]);
+            setIsPointEditing(false)
+        } else {
+            return
+        }
+    }
+
+    const removePoint = (id: number) => {
+        const filteredEndpoints = endpoints.filter((endp) => {
+            return endp.id !== id;
+        })
+
+        setEndpoints(filteredEndpoints)
+    }
+
     return (
         <section className={s.mapPage}>
             <AppBar position="static">
@@ -92,18 +122,19 @@ export const MapPage = (props: Props) => {
                 title={"Создание точки назначения"}
             />
 
-            {/*<MarkerCreationModal*/}
-            {/*    isOpen={updateMarkerDialogState}*/}
-            {/*    title={"Изменение точки назначения"}*/}
-            {/*    markerName={initDialogMarker?.name ?? ""}*/}
-            {/*    onSaveClick={onUpdateMarkerDialogSaveClick}*/}
-            {/*    onCancelClick={onUpdateMarkerDialogCancelClick}*/}
-            {/*/>*/}
+
+            <Modal
+                isOpen={isPointEditing}
+                acceptClick={(name: string) => editPoint(name)}
+                defaultName={editingPoint?.name}
+                setIsOpen={setIsPointEditing}
+                title={"Изменение точки назначения"}
+            />
 
             <MapContainer
                 className={s.container}
                 center={position} zoom={zoomLevel}
-                minZoom={15}
+                minZoom={14}
             >
                 <MarkerItem onMapClick={mapClick} />
                 <TileLayer
@@ -117,10 +148,16 @@ export const MapPage = (props: Props) => {
                             key={marker.id}
                             icon={new Icon({iconUrl: pointImage, iconSize: [32, 32], iconAnchor: [20, 20]})}
                         >
-                            <CustomTooltip name={marker.name} isPermanent={isPointsNamesDisplay}/>
+                            <Tooltip key={marker.name+isPointsNamesDisplay} sticky={!isPointsNamesDisplay} permanent={isPointsNamesDisplay}>
+                                <span>{marker.name}</span>
+                            </Tooltip>
                             <Popup>
-                                <Button disabled={!isEditing} size="small">Изменить</Button><br />
-                                <Button disabled={!isEditing} size="small">Удалить</Button>
+                                <Button disabled={!isEditing} size="small" onClick={() => {
+                                    setEditingPoint(marker)
+                                    setIsPointEditing(true)
+                                }}>
+                                    Изменить</Button><br />
+                                <Button onClick={() => removePoint(marker.id)} disabled={!isEditing} size="small">Удалить</Button>
                             </Popup>
                         </Marker>
                     ))
