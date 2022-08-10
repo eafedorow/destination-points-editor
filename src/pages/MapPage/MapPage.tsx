@@ -9,6 +9,7 @@ import pointImage from '../../assets/img/point.png'
 import { MarkerItem } from '../../components/MarkerItem/MarkerItem'
 import {CustomTooltip} from "../../components/CustomTooltip/CustomTooltip";
 import {SetBoundsDefault} from "../../components/SetBoundsDefault/SetBoundsDefault";
+import {Modal} from "../../components/Modal/Modal";
 
 interface Props {
 
@@ -39,35 +40,35 @@ export const MapPage = (props: Props) => {
     const [endpoints, setEndpoints] = useState<IPoint[]>(mockPoints);
     const [isEditing, setIsEditing] = useState(false);
     const [posForNewPoint, setPosForNewPoint] = useState<LatLngExpression | null>(null);
-    const [pointCreating, setPointCreating] = useState(false);
+
+    const [isPointCreating, setIsPointCreating] = useState(false);
     const [isPointsNamesDisplay, setIsPointsNamesDisplay] = useState(false);
     const [zoomLevel, setZoomLevel] = useState(15);
+    const [value, setValue] = useState(0);
 
     const mapClick = (e: LeafletMouseEvent) => {
         if (isEditing) {
             setPosForNewPoint(e.latlng);
-            setPointCreating(true);
+
+            setIsPointCreating(true);
         }
     };
 
-    // useEffect(() => {
-    //     console.log('zoom change')
-    //     map.on("zoomlevelschange", function () {
-    //         setZoomLevel(map.getZoom())
-    //     });
-    //
-    // }, [map])
-
+    const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+        setValue(newValue);
+        if(newValue==1){
+            setIsEditing(false);
+        }
+    };
 
     return (
         <section className={s.mapPage}>
             <AppBar position="static">
-                <Tabs>
+                <Tabs value={value} onChange={handleChange}>
                     <Tab label="Точки назначения" />
                     <Tab label="Пользователи" />
                 </Tabs>
             </AppBar>
-
             <div className={s.editingBlock}>
                 <span className={s.editingBlock__title}>Режим редактирования</span>
                 <SwitchButton isToggled={isEditing} onToggle={() => setIsEditing(!isEditing)} rounded/>
@@ -75,13 +76,13 @@ export const MapPage = (props: Props) => {
                 <SwitchButton isToggled={isPointsNamesDisplay} onToggle={() => setIsPointsNamesDisplay(!isPointsNamesDisplay)} rounded/>
             </div>
 
-            {/*<MarkerCreationModal*/}
-            {/*    isOpen={newMarkerDialogState}*/}
-            {/*    title={"Создание точки назначения"}*/}
-            {/*    markerName={""}*/}
-            {/*    onSaveClick={onNewMarkerDialogSaveClick}*/}
-            {/*    onCancelClick={onNewMarkerDialogCancelClick}*/}
-            {/*/>*/}
+
+            <Modal
+                isOpen={isPointCreating}
+                setIsOpen={setIsPointCreating}
+                title={"Создание точки назначения"}
+            />
+
             {/*<MarkerCreationModal*/}
             {/*    isOpen={updateMarkerDialogState}*/}
             {/*    title={"Изменение точки назначения"}*/}
