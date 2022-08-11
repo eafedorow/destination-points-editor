@@ -1,6 +1,6 @@
 export interface IUser {
-    id: number | undefined;
-    login: string | undefined;
+    id: number;
+    login: string;
     name: string | undefined;
     role: number;
 };

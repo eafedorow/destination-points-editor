@@ -16,6 +16,8 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import React, {useState} from 'react'
 import s from './UserTable.module.scss'
 import {IUser} from "../../model/IUser";
+import {UserModal} from "../UserModal/UserModal";
+import {marker} from "leaflet";
 
 interface Props {
 
@@ -25,21 +27,65 @@ const mockUsers: IUser[] = [
     {
         id: 1,
         login: 'test1@test.ru',
-        name: 'Evgenii',
-        role: 0
+        name: 'Admin',
+        role: 1
     },
     {
         id: 2,
         login: 'test2@test.ru',
-        name: 'Admin',
-        role: 1
+        name: 'Evgenii',
+        role: 0
     },
+
 ]
+
+
 
 export const UserTable = (props: Props) => {
     const [users, setUsers] = useState<IUser[]>(mockUsers);
+    const [isAddUser, setIsAddUser] = useState(false);
+    const [isEditUser, setIsEditUser] = useState(false);
+    const [editingUser, setEditingUser] = useState<IUser | null>(null);
+
+    function addUser(name: string, login: string, role: number) {
+        const newUser: IUser = {
+            id: Date.now(),
+            name,
+            login,
+            role
+        }
+        setUsers([...users, newUser]);
+    }
+
+    function editUser(name: string, login: string, role: number) {
+
+        if(editingUser !== null){
+            // ts-ignore because of stupid linter.
+            //@ts-ignore
+            let existingUser = users[editingUser?.id];
+            existingUser = {
+                ...existingUser,
+                name,
+                login,
+                role
+            }
+            // ts-ignore because of stupid linter.
+            //@ts-ignore
+            users[editingUser?.id] = existingUser;
+            setUsers([...users]);
+        }
+
+    }
+
+    function removeUser(id: number) {
+        const filteredUsers: IUser[] = users.filter((user) => {
+            return user.id !== id;
+        })
+        setUsers(filteredUsers)
+    }
+
     return (
-            <div className={s.tableWrapper}>
+        <div className={s.tableWrapper}>
             <Button
                 variant="outlined"
                 color="primary"

@@ -8,7 +8,7 @@ import {IPoint} from "../../model/IPoint";
 import pointImage from '../../assets/img/point.png'
 import { MarkerItem } from '../../components/MarkerItem/MarkerItem'
 import {SetBoundsDefault} from "../../components/SetBoundsDefault/SetBoundsDefault";
-import {Modal} from "../../components/Modal/Modal";
+import {PointModal} from "../../components/PointModal/PointModal";
 import { TabPanel } from '../../components/TabPanel/TabPanel'
 import SwipeableViews from 'react-swipeable-views'
 import {UserTable} from "../../components/UserTable/UserTable";
@@ -142,14 +142,14 @@ export const MapPage = (props: Props) => {
                         </div>
                     </div>
 
-                    <Modal
+                    <PointModal
                         isOpen={isPointCreating}
                         acceptClick={(name: string) => addPoint(name)}
                         setIsOpen={setIsPointCreating}
                         defaultName={""}
                         title={"Создание точки назначения"}
                     />
-                    <Modal
+                    <PointModal
                         isOpen={isPointEditing}
                         acceptClick={(name: string) => editPoint(name)}
                         defaultName={defaultValue}
@@ -160,14 +160,14 @@ export const MapPage = (props: Props) => {
                     <MapContainer
                         className={s.container}
                         center={position} zoom={zoomLevel}
-                        minZoom={14}
+                        minZoom={13}
                     >
                         <MarkerItem onMapClick={mapClick} />
                         <TileLayer
                             noWrap={false}
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
-                        {zoomLevel >= 15 &&
+                        {zoomLevel >= 14 &&
                             endpoints.map((marker, index) => (
                                 <Marker
                                     position={marker.position}
