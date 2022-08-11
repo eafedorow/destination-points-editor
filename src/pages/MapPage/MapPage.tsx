@@ -1,4 +1,4 @@
-import {AppBar, Button, Tab, Tabs, useTheme} from '@mui/material'
+import {AppBar, Button, IconButton, Tab, Tabs, useTheme} from '@mui/material'
 import {Icon, LatLngExpression, LeafletMouseEvent} from 'leaflet'
 import React, {useState} from 'react'
 import {MapContainer, Marker, Popup, TileLayer, Tooltip} from 'react-leaflet'
@@ -11,7 +11,12 @@ import {SetBoundsDefault} from "../../components/SetBoundsDefault/SetBoundsDefau
 import {PointModal} from "../../components/PointModal/PointModal";
 import { TabPanel } from '../../components/TabPanel/TabPanel'
 import SwipeableViews from 'react-swipeable-views'
+import {Tooltip as MUITooltip} from '@mui/material'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import {UserTable} from "../../components/UserTable/UserTable";
+import {useNavigate} from "react-router-dom";
+import {HelpModal} from "../../components/HelpModal/HelpModal";
+
 
 interface Props {
 
@@ -20,18 +25,108 @@ interface Props {
 const mockPoints: IPoint[] = [
     {
         id: 0,
-        name: 'Ворота 1',
-        position: [59.132111, 37.854814],
+        name: 'Ворота A-2',
+        position: [59.132458, 37.858985],
     },
     {
         id: 1,
-        name: 'Ворота 2',
+        name: 'Ворота C-2',
         position: [59.129761, 37.868440],
     },
     {
         id: 2,
         name: 'Инструментальный цех',
         position: [59.130390, 37.860070],
+    },
+    {
+        id: 3,
+        name: 'Проходная №1',
+        position: [59.134614, 37.860623],
+    },
+    {
+        id: 4,
+        name: 'Проходная №2',
+        position: [59.132836, 37.873129],
+    },
+    {
+        id: 5,
+        name: 'Проходная №3',
+        position: [59.128436, 37.860283],
+    },
+    {
+        id: 6,
+        name: 'ОАО Юниспринг',
+        position: [59.131476, 37.848765],
+    },
+    {
+        id: 7,
+        name: 'Открытые склады',
+        position: [59.130240, 37.853284],
+    },
+    {
+        id: 8,
+        name: 'Стоматология',
+        position: [59.133473, 37.872478],
+    },
+    {
+        id: 9,
+        name: 'Столовая',
+        position: [59.131798, 37.866194],
+    },
+    {
+        id: 10,
+        name: 'Парковка',
+        position: [59.128860, 37.861919],
+    },
+    {
+        id: 11,
+        name: 'Ворота A-1',
+        position: [59.134301, 37.855435],
+    },
+    {
+        id: 12,
+        name: 'Ворота A-3',
+        position: [59.132413, 37.855604],
+    },
+    {
+        id: 13,
+        name: 'Ворота A-4',
+        position: [59.134221, 37.850799],
+    },
+    {
+        id: 14,
+        name: 'Автомастерская',
+        position: [59.132929, 37.849433],
+    },
+    {
+        id: 15,
+        name: 'Ворота C-3',
+        position: [59.129786, 37.861528],
+    },
+    {
+        id: 16,
+        name: 'Ворота B-2',
+        position: [59.132354, 37.863652],
+    },
+    {
+        id: 17,
+        name: 'Ворота B-1',
+        position: [59.133768, 37.863462],
+    },
+    {
+        id: 18,
+        name: 'АБК ВОХР',
+        position: [59.133692, 37.861015],
+    },
+    {
+        id: 19,
+        name: 'Администрация',
+        position: [59.131831, 37.872624],
+    },
+    {
+        id: 20,
+        name: 'Сталепрокатный цех',
+        position: [59.131789, 37.857028],
     },
 ]
 
@@ -44,6 +139,7 @@ export const MapPage = (props: Props) => {
     const [posForNewPoint, setPosForNewPoint] = useState<LatLngExpression>([0,0]);
     const [isPointCreating, setIsPointCreating] = useState(false);
 
+    const [isHelpModal, setIsHelpModal] = useState(true);
 
     const [editingPoint, setEditingPoint] = useState<IPoint | null>(null);
     const [defaultValue, setDefaultValue] = useState("");
@@ -54,6 +150,8 @@ export const MapPage = (props: Props) => {
     const [zoomLevel, setZoomLevel] = useState(15);
     const [value, setValue] = useState(0);
 
+
+    const navigate = useNavigate();
 
     const theme = useTheme();
 
@@ -113,17 +211,45 @@ export const MapPage = (props: Props) => {
 
     return (
         <section className={s.mapPage}>
-            <AppBar position="static">
-                <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    textColor="inherit"
-                    indicatorColor="secondary"
-                    aria-label="secondary tabs example"
-                >
-                    <Tab label="Точки назначения" value={0}/>
-                    <Tab label="Пользователи" value={1}/>
-                </Tabs>
+            <AppBar className={s.menu} position="static">
+                <div>
+                    <Tabs
+                        value={value}
+                        onChange={handleChange}
+                        textColor="inherit"
+                        indicatorColor="secondary"
+                        variant="scrollable"
+                        scrollButtons
+                        allowScrollButtonsMobile
+                    >
+                        <Tab label="Точки назначения" value={0}/>
+                        <Tab label="Пользователи" value={1}/>
+                        <div className={s.buttonsContainer}>
+                            <MUITooltip title="Как работает приложение?">
+                                <Button
+                                    className={s.helpButton}
+                                    variant="contained"
+                                    color="info"
+                                    onClick={() => {
+                                        setValue(0);
+                                        setIsHelpModal(true)
+                                    }}
+                                >
+                                    <HelpOutlineIcon />
+                                </Button>
+                            </MUITooltip>
+                            <Button
+                                color="inherit"
+                                onClick={() => {
+                                    navigate('/');
+                                }}
+                            >
+                                Выйти
+                            </Button>
+                        </div>
+                    </Tabs>
+                </div>
+
             </AppBar>
             <SwipeableViews
                 axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
@@ -155,6 +281,11 @@ export const MapPage = (props: Props) => {
                         defaultName={defaultValue}
                         setIsOpen={setIsPointEditing}
                         title={"Изменение точки назначения"}
+                    />
+                    <HelpModal
+                        isOpen={isHelpModal}
+                        setIsOpen={setIsHelpModal}
+                        title={"Информация о приложении"}
                     />
 
                     <MapContainer
