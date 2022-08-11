@@ -84,6 +84,14 @@ export const UserTable = (props: Props) => {
         setUsers(filteredUsers)
     }
 
+=======
+        name: 'Admin',
+        role: 1
+    },
+]
+
+export const UserTable = (props: Props) => {
+    const [users, setUsers] = useState<IUser[]>(mockUsers);
     return (
         <div className={s.tableWrapper}>
             <Button
@@ -114,6 +122,10 @@ export const UserTable = (props: Props) => {
                 }}
             />
 
+=======
+            >
+                Добавить
+            </Button>
             <TableContainer className={s.table} component={Paper}>
                 <Table aria-label="simple table">
                     <TableHead>
@@ -130,6 +142,18 @@ export const UserTable = (props: Props) => {
                         {users.map((row, index) => (
                             <TableRow key={row.id}>
                                 <TableCell align="left">{index + 1}</TableCell>
+                            <TableCell align="left">Номер</TableCell>
+                            <TableCell align="left">Логин</TableCell>
+                            <TableCell align="left">Имя</TableCell>
+                            <TableCell align="left">Роль</TableCell>
+                            <TableCell width={32} ></TableCell>
+                            <TableCell width={32}></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {users.map((row) => (
+                            <TableRow key={row.id}>
+                                <TableCell align="left">{row.id}</TableCell>
                                 <TableCell align="left">{row.login}</TableCell>
                                 <TableCell align="left">{row.name}</TableCell>
                                 <TableCell align="left">{row.role === 0 ? ("Пользователь") : ("Администратор")}</TableCell>
