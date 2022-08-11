@@ -39,42 +39,67 @@ const mockUsers: IUser[] = [
 export const UserTable = (props: Props) => {
     const [users, setUsers] = useState<IUser[]>(mockUsers);
     return (
-        <div className={s.tableWrapper}>
+            <div className={s.tableWrapper}>
             <Button
                 variant="outlined"
                 color="primary"
+                onClick={() => setIsAddUser(true)}
             >
                 Добавить
             </Button>
+
+            <UserModal
+                title={"Добавление пользователя"}
+                isOpen={isAddUser}
+                setIsOpen={setIsAddUser}
+                acceptClick={(name: string, login: string, role: number) => {
+                    addUser(name, login, role)
+                    setIsAddUser(false)
+                }}
+            />
+
+            <UserModal
+                title={"Редактирование пользователя " + editingUser?.login}
+                isOpen={isEditUser}
+                setIsOpen={setIsEditUser}
+                acceptClick={(name: string, login: string, role: number) => {
+                    editUser(name, login, role)
+                    setIsEditUser(false)
+                }}
+            />
+
             <TableContainer className={s.table} component={Paper}>
                 <Table aria-label="simple table">
                     <TableHead>
                         <TableRow >
-                            <TableCell align="left">Номер</TableCell>
+                            <TableCell width={20} align="left">Номер</TableCell>
                             <TableCell align="left">Логин</TableCell>
-                            <TableCell align="left">Имя</TableCell>
+                            <TableCell  align="left">Имя</TableCell>
                             <TableCell align="left">Роль</TableCell>
-                            <TableCell width={32} ></TableCell>
-                            <TableCell width={32}></TableCell>
+                            <TableCell width={20} ></TableCell>
+                            <TableCell width={20}></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {users.map((row) => (
+                        {users.map((row, index) => (
                             <TableRow key={row.id}>
-                                <TableCell align="left">{row.id}</TableCell>
+                                <TableCell align="left">{index + 1}</TableCell>
                                 <TableCell align="left">{row.login}</TableCell>
                                 <TableCell align="left">{row.name}</TableCell>
                                 <TableCell align="left">{row.role === 0 ? ("Пользователь") : ("Администратор")}</TableCell>
                                 <TableCell align="left">
                                     <Tooltip title="Изменить">
-                                        <IconButton aria-label="изменить"  disabled={row.id === 1} >
+                                        <IconButton aria-label="изменить"  disabled={row.id === 1} onClick={() => {
+                                            setEditingUser(row)
+                                            setIsEditUser(true)
+                                        }}>
                                             <EditOutlinedIcon />
                                         </IconButton>
                                     </Tooltip>
                                 </TableCell>
                                 <TableCell align="left">
                                     <Tooltip title="Удалить">
-                                        <IconButton aria-label="удалить">
+                                        <IconButton aria-label="удалить" onClick={() => {removeUser(row.id)}}>
                                             <DeleteOutlinedIcon />
                                         </IconButton>
                                     </Tooltip>
@@ -84,7 +109,6 @@ export const UserTable = (props: Props) => {
                     </TableBody>
                 </Table>
             </TableContainer>
-
         </div>
     )
 }
