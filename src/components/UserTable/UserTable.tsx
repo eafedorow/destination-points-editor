@@ -93,7 +93,7 @@ export const UserTable = (props: Props) => {
 export const UserTable = (props: Props) => {
     const [users, setUsers] = useState<IUser[]>(mockUsers);
     return (
-        <div className={s.tableWrapper}>
+            <div className={s.tableWrapper}>
             <Button
                 variant="outlined"
                 color="primary"
@@ -122,10 +122,26 @@ export const UserTable = (props: Props) => {
                 }}
             />
 
-=======
-            >
-                Добавить
-            </Button>
+            <UserModal
+                title={"Добавление пользователя"}
+                isOpen={isAddUser}
+                setIsOpen={setIsAddUser}
+                acceptClick={(name: string, login: string, role: number) => {
+                    addUser(name, login, role)
+                    setIsAddUser(false)
+                }}
+            />
+
+            <UserModal
+                title={"Редактирование пользователя " + editingUser?.login}
+                isOpen={isEditUser}
+                setIsOpen={setIsEditUser}
+                acceptClick={(name: string, login: string, role: number) => {
+                    editUser(name, login, role)
+                    setIsEditUser(false)
+                }}
+            />
+
             <TableContainer className={s.table} component={Paper}>
                 <Table aria-label="simple table">
                     <TableHead>
@@ -144,16 +160,16 @@ export const UserTable = (props: Props) => {
                                 <TableCell align="left">{index + 1}</TableCell>
                             <TableCell align="left">Номер</TableCell>
                             <TableCell align="left">Логин</TableCell>
-                            <TableCell align="left">Имя</TableCell>
+                            <TableCell  align="left">Имя</TableCell>
                             <TableCell align="left">Роль</TableCell>
-                            <TableCell width={32} ></TableCell>
-                            <TableCell width={32}></TableCell>
+                            <TableCell width={20} ></TableCell>
+                            <TableCell width={20}></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {users.map((row) => (
+                        {users.map((row, index) => (
                             <TableRow key={row.id}>
-                                <TableCell align="left">{row.id}</TableCell>
+                                <TableCell align="left">{index + 1}</TableCell>
                                 <TableCell align="left">{row.login}</TableCell>
                                 <TableCell align="left">{row.name}</TableCell>
                                 <TableCell align="left">{row.role === 0 ? ("Пользователь") : ("Администратор")}</TableCell>
