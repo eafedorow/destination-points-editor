@@ -168,7 +168,6 @@ export const MapPage = (props: Props) => {
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
                         {zoomLevel >= 14 &&
-
                             endpoints.map((marker, index) => (
                                 <Marker
                                     position={marker.position}
