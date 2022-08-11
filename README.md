@@ -1,46 +1,95 @@
-# Getting Started with Create React App
+# Веб-приложение для редактирования точек назначения
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Данное веб-приложение предназначено для редактирования точек назначения в базе данных для навигационной системы по территории предприятия ОАО «Северсталь-метиз».
 
-## Available Scripts
+<p align="center" > 
+  <img src="https://user-images.githubusercontent.com/61786122/184161437-889dbc01-2a38-41fd-adfa-c35bd0bbe51f.png">
+</p>
+<p align="center">Рис. 1.<p align="center">
 
-In the project directory, you can run:
+## Точки назначения
+Точки назначения обозначены синими иконками и размещаются внутри области размещения. Область размещения точек назначения определена прямоугольной фигурой (рис. 1). 
+Таких областей размещения на карте может быть несколько. Для того чтобы сфокусировать камеру на области необходимо кликнуть по выделенной области.
+<p align="center" > 
+  <img width="600" height="300" src="https://user-images.githubusercontent.com/61786122/184162333-1f84d81a-361f-42a9-a143-1f5b5d52290a.png">
+</p>
+<p align="center">Рис. 2. Точки назначения<p align="center">
 
-### `npm start`
+## Настройки приложения
+В верхнем меню приложения расположены кнопки настроек работы приложения (рис. 3). Для того чтобы редактировать список точек назначения необходимо активировать режим редактирования. Для того чтобы изменить режим отображения точек назначения необходимо активировать режим постоянного отображения.
+<p align="center" > 
+  <img src="https://user-images.githubusercontent.com/61786122/184163883-b659e5f3-6976-4e72-9b56-a8eafdde5707.png">
+</p>
+<p align="center">Рис. 3. Настройки приложения<p align="center">
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Точки назначения при активированном режиме постоянного отображения наименований приведены на рис. 4.
+<p align="center" > 
+  <img src="https://user-images.githubusercontent.com/61786122/184164299-6b0d7d6a-561f-441f-aa45-ee1eed8a7bd8.png">
+</p>
+<p align="center">Рис. 4. Режим отображения<p align="center">
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Редактирования точек назначения
+Для редактирования точек назначения необходимо активировать режим редактирования в настройках.
+<p align="center" > 
+  <img src="https://user-images.githubusercontent.com/61786122/184164739-e8bf87c7-a608-4134-8ce5-159f3dd3f088.png">
+</p>
+<p align="center">Рис. 5. Режим редактирования<p align="center">
+При нажатии на иконку точки назначения всплывает окно выбора действия.
+<p align="center" > 
+  <img src="https://user-images.githubusercontent.com/61786122/184164884-f43df0f5-3aaa-45a0-8372-5fa921a6fb2f.png">
+</p>
+<p align="center">Рис. 6. Окно выбора действия<p align="center">
 
-### `npm test`
+При нажатии на кнопку «Изменить» появляется следующее окно (рис. 7).
+<p align="center" > 
+  <img src="https://user-images.githubusercontent.com/61786122/184165091-f6fa974b-c987-427a-8c66-0138e88ec66b.png">
+</p>
+<p align="center">Рис. 7. Редактирование точки назначения<p align="center">
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Для того чтобы изменить название необходимо ввести в текстовое поле новое наименование и нажать «Сохранить». Далее все изменения будут изменены на карте (рис. 8).
+<p align="center" > 
+  <img src="https://user-images.githubusercontent.com/61786122/184165651-092d1d12-0ede-4406-ab6b-f5f6240256ea.png">
+</p>
+<p align="center">Рис. 8. Редактирование точки назначения<p align="center">
 
-### `npm run build`
+## Создание точки назначения
+Для создании точки назначения необходимо нажать на любую точку на карте. После нажатия появится окно создания новой точки назначения (рис. 9).
+<p align="center" > 
+  <img src="https://user-images.githubusercontent.com/61786122/184165892-28709389-3336-483d-8a88-bc12cf938300.png">
+</p>
+<p align="center">Рис. 9. Создание точки назначения<p align="center">
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Для того чтобы сохранить новую точку необходимо заполнить текстовое поле и нажать «Сохранить». Далее новая точка назначения будет отображена на карте (рис. 10).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+<p align="center" > 
+  <img src="https://user-images.githubusercontent.com/61786122/184165903-5205b3b2-ea15-4103-b575-791679324d17.png">
+</p>
+<p align="center">Рис. 10. Созданная точка назначения<p align="center">
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Пользователи
+Во второй вкладке приложения находится информация о пользователях (рис. 11).
 
-### `npm run eject`
+<p align="center" > 
+  <img src="https://user-images.githubusercontent.com/61786122/184166748-236a4866-e2bf-4ed2-869c-bb3f80be9b24.png">
+</p>
+<p align="center">Рис. 11. Пользователи<p align="center">
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Для того чтобы добавить пользователя необходимо нажать «Добавить» (рис. 12).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+<p align="center" > 
+  <img src="https://user-images.githubusercontent.com/61786122/184166710-92020b26-7315-464b-9ee1-4b4970723976.png">
+</p>
+<p align="center">Рис. 12. Добавление пользователей<p align="center">
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Кнопки для редактирования данных пользователей (рис. 13).
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+<p align="center" > 
+  <img src="https://user-images.githubusercontent.com/61786122/184166660-440e0aa7-da8e-4bff-9907-28f32e4ede17.png">
+</p>
+<p align="center">Рис. 13. Редактирование пользователей<p align="center">
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+
+
+
