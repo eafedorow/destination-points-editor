@@ -1,14 +1,17 @@
-import { AppBar, Button, Tab, Tabs } from '@mui/material'
+import {AppBar, Button, Tab, Tabs, useTheme} from '@mui/material'
 import {Icon, LatLngExpression, LeafletMouseEvent} from 'leaflet'
-import React, {useEffect, useState} from 'react'
-import {MapContainer, Marker, Popup, TileLayer, Tooltip, useMap, useMapEvents} from 'react-leaflet'
+import React, {useState} from 'react'
+import {MapContainer, Marker, Popup, TileLayer, Tooltip} from 'react-leaflet'
 import s from './MapPage.module.scss'
 import {SwitchButton} from "../../components/UI/SwitchButton/SwitchButton";
 import {IPoint} from "../../model/IPoint";
 import pointImage from '../../assets/img/point.png'
 import { MarkerItem } from '../../components/MarkerItem/MarkerItem'
 import {SetBoundsDefault} from "../../components/SetBoundsDefault/SetBoundsDefault";
-import {Modal} from "../../components/Modal/Modal";
+import {PointModal} from "../../components/PointModal/PointModal";
+import { TabPanel } from '../../components/TabPanel/TabPanel'
+import SwipeableViews from 'react-swipeable-views'
+import {UserTable} from "../../components/UserTable/UserTable";
 
 interface Props {
 
@@ -43,6 +46,7 @@ export const MapPage = (props: Props) => {
 
 
     const [editingPoint, setEditingPoint] = useState<IPoint | null>(null);
+    const [defaultValue, setDefaultValue] = useState("");
     const [isPointEditing, setIsPointEditing] = useState(false);
 
 
@@ -50,8 +54,11 @@ export const MapPage = (props: Props) => {
     const [zoomLevel, setZoomLevel] = useState(15);
     const [value, setValue] = useState(0);
 
+
+    const theme = useTheme();
+
     const mapClick = (e: LeafletMouseEvent) => {
-        if (isEditing) {
+        if (isEditing && zoomLevel >= 15) {
             setPosForNewPoint(e.latlng);
             setIsPointCreating(true);
         }
@@ -59,9 +66,13 @@ export const MapPage = (props: Props) => {
 
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setValue(newValue);
-        if(newValue==1){
+        if(newValue === 1){
             setIsEditing(false);
         }
+    };
+
+    const handleChangeIndex = (index: number) => {
+        setValue(index);
     };
 
     const addPoint = (name:string) => {
@@ -103,67 +114,88 @@ export const MapPage = (props: Props) => {
     return (
         <section className={s.mapPage}>
             <AppBar position="static">
-                <Tabs value={value} onChange={handleChange}>
-                    <Tab label="Точки назначения" />
-                    <Tab label="Пользователи" />
+                <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    textColor="inherit"
+                    indicatorColor="secondary"
+                    aria-label="secondary tabs example"
+                >
+                    <Tab label="Точки назначения" value={0}/>
+                    <Tab label="Пользователи" value={1}/>
                 </Tabs>
             </AppBar>
-            <div className={s.editingBlock}>
-                <span className={s.editingBlock__title}>Режим редактирования</span>
-                <SwitchButton isToggled={isEditing} onToggle={() => setIsEditing(!isEditing)} rounded/>
-                <span className={s.editingBlock__title}>Отобразить все наименования точек</span>
-                <SwitchButton isToggled={isPointsNamesDisplay} onToggle={() => setIsPointsNamesDisplay(!isPointsNamesDisplay)} rounded/>
-            </div>
-
-            <Modal
-                isOpen={isPointCreating}
-                acceptClick={(name: string) => addPoint(name)}
-                setIsOpen={setIsPointCreating}
-                title={"Создание точки назначения"}
-            />
-
-
-            <Modal
-                isOpen={isPointEditing}
-                acceptClick={(name: string) => editPoint(name)}
-                defaultName={editingPoint?.name}
-                setIsOpen={setIsPointEditing}
-                title={"Изменение точки назначения"}
-            />
-
-            <MapContainer
-                className={s.container}
-                center={position} zoom={zoomLevel}
-                minZoom={14}
+            <SwipeableViews
+                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                index={value}
+                onChangeIndex={handleChangeIndex}
             >
-                <MarkerItem onMapClick={mapClick} />
-                <TileLayer
-                    noWrap={false}
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                {zoomLevel >= 15 &&
-                    endpoints.map((marker, index) => (
-                        <Marker
-                            position={marker.position}
-                            key={marker.id}
-                            icon={new Icon({iconUrl: pointImage, iconSize: [32, 32], iconAnchor: [20, 20]})}
-                        >
-                            <Tooltip key={marker.name+isPointsNamesDisplay} sticky={!isPointsNamesDisplay} permanent={isPointsNamesDisplay}>
-                                <span>{marker.name}</span>
-                            </Tooltip>
-                            <Popup>
-                                <Button disabled={!isEditing} size="small" onClick={() => {
-                                    setEditingPoint(marker)
-                                    setIsPointEditing(true)
-                                }}>
-                                    Изменить</Button><br />
-                                <Button onClick={() => removePoint(marker.id)} disabled={!isEditing} size="small">Удалить</Button>
-                            </Popup>
-                        </Marker>
-                    ))
-                }
-                <SetBoundsDefault zoomLevel={zoomLevel} setZoomLevel={setZoomLevel}/>
-            </MapContainer>
+                <TabPanel  value={value} index={0} dir={theme.direction}>
+                    <div className={s.editingBlock}>
+                        <div className={s.editingBlock__element}>
+                            <span className={s.editingBlock__title}>Режим редактирования</span>
+                            <SwitchButton isToggled={isEditing} onToggle={() => setIsEditing(!isEditing)} rounded/>
+                        </div>
+                        <div className={s.editingBlock__element}>
+                            <span className={s.editingBlock__title}>Отобразить все наименования точек</span>
+                            <SwitchButton isToggled={isPointsNamesDisplay} onToggle={() => setIsPointsNamesDisplay(!isPointsNamesDisplay)} rounded/>
+                        </div>
+                    </div>
+
+                    <PointModal
+                        isOpen={isPointCreating}
+                        acceptClick={(name: string) => addPoint(name)}
+                        setIsOpen={setIsPointCreating}
+                        defaultName={""}
+                        title={"Создание точки назначения"}
+                    />
+                    <PointModal
+                        isOpen={isPointEditing}
+                        acceptClick={(name: string) => editPoint(name)}
+                        defaultName={defaultValue}
+                        setIsOpen={setIsPointEditing}
+                        title={"Изменение точки назначения"}
+                    />
+
+                    <MapContainer
+                        className={s.container}
+                        center={position} zoom={zoomLevel}
+                        minZoom={13}
+                    >
+                        <MarkerItem onMapClick={mapClick} />
+                        <TileLayer
+                            noWrap={false}
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
+                        {zoomLevel >= 14 &&
+                            endpoints.map((marker, index) => (
+                                <Marker
+                                    position={marker.position}
+                                    key={marker.id}
+                                    icon={new Icon({iconUrl: pointImage, iconSize: [32, 32], iconAnchor: [20, 20]})}
+                                >
+                                    <Tooltip key={marker.name+isPointsNamesDisplay} sticky={!isPointsNamesDisplay} permanent={isPointsNamesDisplay}>
+                                        <span>{marker.name}</span>
+                                    </Tooltip>
+                                    <Popup>
+                                        <Button disabled={!isEditing} size="small" onClick={() => {
+                                            setEditingPoint(marker)
+                                            setDefaultValue(marker.name);
+                                            setIsPointEditing(true)
+                                        }}>
+                                            Изменить</Button><br />
+                                        <Button onClick={() => removePoint(marker.id)} disabled={!isEditing} size="small">Удалить</Button>
+                                    </Popup>
+                                </Marker>
+                            ))
+                        }
+                        <SetBoundsDefault zoomLevel={zoomLevel} setZoomLevel={setZoomLevel}/>
+                    </MapContainer>
+                </TabPanel>
+                <TabPanel value={value} index={1} dir={theme.direction}>
+                    <UserTable/>
+                </TabPanel>
+            </SwipeableViews>
         </section>
     )
 }

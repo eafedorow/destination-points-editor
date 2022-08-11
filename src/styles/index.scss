@@ -9,7 +9,10 @@
 
 body {
   font-family: 'Poppins', sans-serif;
+  height:100%;
 }
+
+html { height:100%; }
 
 .global-container {
   height: 100vh;
@@ -19,7 +22,6 @@ body {
 }
 
 .container {
-  max-width: 1200px;
   height: 100%;
   margin: 0 auto;
   position: relative;
